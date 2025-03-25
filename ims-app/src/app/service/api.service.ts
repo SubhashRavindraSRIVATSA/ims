@@ -14,7 +14,7 @@ export class ApiService {
 
   constructor(private http:HttpClient) { }
 
-  encryptAndSaveTpStorage(key:string, value:string):void{
+  encryptAndSaveToStorage(key:string, value:string):void{
     const encryptedValue = CryptoJS.AES.encrypt(value, ApiService.ENCRYPTION_KEY).toString();
     localStorage.setItem(key, encryptedValue);
   }
