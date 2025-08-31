@@ -1,87 +1,55 @@
 package com.subhash.ims.controller;
 
-import com.subhash.ims.dto.ProductDTO;
-import com.subhash.ims.dto.Response;
+import com.subhash.ims.dto.ProductCreateRequest;
+import com.subhash.ims.dto.ProductResponse;
+import com.subhash.ims.dto.ProductUpdateRequest;
 import com.subhash.ims.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@Slf4j
 public class ProductController {
 
-    private final ProductService productService;
+    @Autowired
+    ProductService productService;
 
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> saveProduct(
-            @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("name") String  name,
-            @RequestParam("sku") String  sku,
-            @RequestParam("price") BigDecimal price,
-            @RequestParam("stockQuantity") Integer  stockQuantity,
-            @RequestParam("categoryId") Long  categoryId,
-            @RequestParam(value = "description", required = false) String  description
-    ) {
-        ProductDTO productDTO = new ProductDTO();
-
-        productDTO.setName(name);
-        productDTO.setSku(sku);
-        productDTO.setPrice(price);
-        productDTO.setStockQuantity(stockQuantity);
-        productDTO.setCategoryId(categoryId);
-        productDTO.setDescription(description);
-
-        System.out.println(productDTO);
-
-
-        return ResponseEntity.ok(productService.saveProduct(productDTO, imageFile));
-    }
-    @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> updateProduct(
-            @RequestParam(value = "imageFile", required=false) MultipartFile imageFile,
-            @RequestParam(value = "name",required = false) String  name,
-            @RequestParam(value = "sku",required = false) String  sku,
-            @RequestParam(value = "price",required = false) BigDecimal price,
-            @RequestParam(value = "stockQuantity",required = false) Integer  stockQuantity,
-            @RequestParam(value = "productId",required = true) Long  productId,
-            @RequestParam(value = "categoryId",required = false) Long  categoryId,
-            @RequestParam(value = "description", required = false) String  description) {
-
-        ProductDTO productDTO = new ProductDTO();
-
-        productDTO.setName(name);
-        productDTO.setSku(sku);
-        productDTO.setPrice(price);
-        productDTO.setStockQuantity(stockQuantity);
-        productDTO.setCategoryId(categoryId);
-        productDTO.setProductId(productId);
-        productDTO.setDescription(description);
-
-        return ResponseEntity.ok(productService.updateProduct(productDTO, imageFile));
+    @GetMapping
+    public Page<ProductResponse> list(Pageable pageable,
+                                      @RequestParam(required = false) Long categoryId) {
+        return (categoryId == null)
+                ? productService.list(pageable)
+                : productService.listByCategory(categoryId, pageable);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<Response> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    @PostMapping
+    public ResponseEntity<ProductResponse> create(@Validated @RequestBody ProductCreateRequest req) throws BadRequestException, ChangeSetPersister.NotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(req));
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Response> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ProductResponse get(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+        return productService.get(id);
     }
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> deleteProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.deleteProduct(id));
+    @PutMapping("/{id}")
+    public ProductResponse update(@PathVariable Long id,
+                                  @Validated @RequestBody ProductUpdateRequest req) throws ChangeSetPersister.NotFoundException {
+        return productService.update(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        productService.delete(id);
     }
 }
