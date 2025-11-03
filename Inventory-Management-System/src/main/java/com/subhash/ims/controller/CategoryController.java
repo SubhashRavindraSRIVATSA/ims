@@ -1,6 +1,7 @@
 package com.subhash.ims.controller;
 
 import com.subhash.ims.dto.CategoryCreateRequest;
+import com.subhash.ims.dto.CategoryDropdownResponse;
 import com.subhash.ims.dto.CategoryResponse;
 import com.subhash.ims.dto.ProductResponse;
 import com.subhash.ims.service.CategoryService;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -55,5 +58,10 @@ public class CategoryController {
     @GetMapping("/{id}/products")
     public Page<ProductResponse> listProducts(@PathVariable Long id, Pageable pageable) throws ChangeSetPersister.NotFoundException {
         return categoryService.listProducts(id, pageable);
+    }
+
+    @GetMapping("/dropdown")
+    public List<CategoryDropdownResponse> getDropdownList() {
+        return categoryService.getDropdownList();
     }
 }

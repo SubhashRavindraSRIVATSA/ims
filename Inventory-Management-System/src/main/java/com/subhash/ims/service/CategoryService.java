@@ -1,12 +1,15 @@
 package com.subhash.ims.service;
 
 import com.subhash.ims.dto.CategoryCreateRequest;
+import com.subhash.ims.dto.CategoryDropdownResponse;
 import com.subhash.ims.dto.CategoryResponse;
 import com.subhash.ims.dto.ProductResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface CategoryService {
     Page<CategoryResponse> list(Pageable pageable);
@@ -16,4 +19,5 @@ public interface CategoryService {
     CategoryResponse update(Long id, CategoryCreateRequest req) throws BadRequestException, ChangeSetPersister.NotFoundException;
     void delete(Long id) throws Exception;
     Page<ProductResponse> listProducts(Long categoryId, Pageable pageable) throws ChangeSetPersister.NotFoundException;
+    List<CategoryDropdownResponse> getDropdownList();
 }

@@ -2,10 +2,7 @@ package com.subhash.ims.service.impl;
 
 import com.subhash.ims.Repository.CategoryRepository;
 import com.subhash.ims.Repository.ProductRepository;
-import com.subhash.ims.dto.CategoryCreateRequest;
-import com.subhash.ims.dto.CategoryResponse;
-import com.subhash.ims.dto.ProductResponse;
-import com.subhash.ims.dto.ProductSummary;
+import com.subhash.ims.dto.*;
 import com.subhash.ims.model.Category;
 import com.subhash.ims.model.Product;
 import com.subhash.ims.service.CategoryService;
@@ -17,30 +14,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    CategoryRepository categories;
+    CategoryRepository categoryRepository;
 
     @Autowired
-    ProductRepository products;
+    ProductRepository productRepository;
 
     @Override
     public Page<CategoryResponse> list(Pageable pageable) {
-        return categories.findAll(pageable).map(this::toResponse);
+        return categoryRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Override
     public CategoryResponse create(CategoryCreateRequest req) throws BadRequestException {
-        if (categories.existsByNameIgnoreCase(req.name())) {
+        if (categoryRepository.existsByNameIgnoreCase(req.name())) {
             throw new BadRequestException("Category name already exists");
         }
         Category c = new Category();
         c.setName(req.name());
         c.setDescription(req.description());
-        categories.save(c);
+        categoryRepository.save(c);
         return toResponse(c);
     }
 
@@ -52,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getWithProducts(Long id) throws ChangeSetPersister.NotFoundException {
         Category c = find(id);
-        List<ProductSummary> prodSummaries = products.findAllByCategory_Id(id).stream()
+        List<ProductSummary> prodSummaries = productRepository.findAllByCategory_Id(id).stream()
                 .map(this::toSummary)
                 .toList();
         return new CategoryResponse(
@@ -66,28 +64,28 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse update(Long id, CategoryCreateRequest req) throws BadRequestException, ChangeSetPersister.NotFoundException {
         Category c = find(id);
         boolean nameChanged = !c.getName().equalsIgnoreCase(req.name());
-        if (nameChanged && categories.existsByNameIgnoreCase(req.name())) {
+        if (nameChanged && categoryRepository.existsByNameIgnoreCase(req.name())) {
             throw new BadRequestException("Category name already exists");
         }
         c.setName(req.name());
         c.setDescription(req.description());
-        categories.save(c);
+        categoryRepository.save(c);
         return toResponse(c);
     }
 
     @Override
     public void delete(Long id) throws Exception {
-        if (products.existsByCategory_Id(id)) {
+        if (productRepository.existsByCategory_Id(id)) {
             throw new Exception("Category has products; reassign or delete them first.");
         }
-        categories.deleteById(id);
+        categoryRepository.deleteById(id);
     }
 
     @Override
     public Page<ProductResponse> listProducts(Long categoryId, Pageable pageable) throws ChangeSetPersister.NotFoundException {
         // ensure category exists
         find(categoryId);
-        return products.findAllByCategory_Id(categoryId, pageable).map((java.util.function.Function<? super Product, ? extends ProductResponse>) this::toResponse);
+        return productRepository.findAllByCategory_Id(categoryId, pageable).map((java.util.function.Function<? super Product, ? extends ProductResponse>) this::toResponse);
     }
 
     private CategoryResponse toResponse(Category c) {
@@ -99,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private Category find(Long id) throws ChangeSetPersister.NotFoundException {
-        return categories.findById(id)
+        return categoryRepository.findById(id)
                 .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
     }
 
@@ -113,5 +111,13 @@ public class CategoryServiceImpl implements CategoryService {
                 p.getQuantityType(), p.getCategory().getId(), p.getCategory().getName(),
                 p.getCreatedAt(), p.getUpdatedAt()
         );
+    }
+
+    @Override
+    public List<CategoryDropdownResponse> getDropdownList() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(cat -> new CategoryDropdownResponse(cat.getId(), cat.getName()))
+                .collect(Collectors.toList());
     }
 }
