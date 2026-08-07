@@ -2,11 +2,9 @@ package com.subhash.ims.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,21 +17,59 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long categoryId;
 
-    @NotBlank(message = "Name is required")
-    @Column(unique = true)
+    @NotBlank(message = "Category name is required")
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Category parentCategory;
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    @OneToMany(mappedBy = "parentCategory",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Category> subCategories = new ArrayList<>();
+
+    // FIXED: Removed CascadeType.REMOVE danger
+    @OneToMany(mappedBy = "category",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Product> products = new ArrayList<>();
+
+    // =========================
+    // HIERARCHY MANAGEMENT
+    // =========================
+
+    public void addSubCategory(Category subCategory) {
+        if (subCategory == null) return;
+
+        subCategories.add(subCategory);
+        subCategory.setParentCategory(this);
     }
 
+    public void removeSubCategory(Category subCategory) {
+        if (subCategory == null) return;
+
+        subCategories.remove(subCategory);
+        subCategory.setParentCategory(null);
+    }
+
+    // =========================
+    // PRODUCT MANAGEMENT
+    // =========================
+
+    protected void addProduct(Product product) {
+        if (product != null && !products.contains(product)) {
+            products.add(product);
+            product.setCategory(this);
+        }
+    }
+
+    protected void removeProduct(Product product) {
+        if (product != null) {
+            products.remove(product);
+            product.setCategory(null);
+        }
+    }
 }

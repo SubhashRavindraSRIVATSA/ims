@@ -2,10 +2,9 @@ package com.subhash.ims.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +14,11 @@ import lombok.NoArgsConstructor;
 public class CategoryDTO {
 
     private Long id;
-
-    @NotBlank(message = "Name is required")
     private String name;
+
+    private Long parentId;
+    private String parentName;
+
+    private List<Long> subCategoryIds;
+    private List<Long> productIds;
 }

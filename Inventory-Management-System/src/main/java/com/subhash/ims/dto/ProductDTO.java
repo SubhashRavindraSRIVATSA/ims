@@ -2,9 +2,8 @@ package com.subhash.ims.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.subhash.ims.enums.Units;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,17 +14,17 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDTO {
+
     private Long id;
-    private Long productId;
-    private Long categoryId;
-    private Long supplierId;
     private String name;
-    private String sku;
     private BigDecimal price;
-    private Integer stockQuantity;
+    private BigDecimal stockQuantity;
+    private Units unit;
     private String description;
-    private String imageUrl;
     private LocalDateTime expiryDate;
-    private  LocalDateTime updatedAt;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    private Long categoryId;
+    private String categoryName;
 }

@@ -1,13 +1,10 @@
 package com.subhash.ims.entity;
 
+import com.subhash.ims.enums.Units;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,44 +24,56 @@ public class Product {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Sku is required")
-    @Column(unique = true)
-    private String sku;
-
-    @Positive(message = "Product price msut be a positive value")
+    @Positive(message = "Product price must be a positive value")
     private BigDecimal price;
 
-    @Min(value = 0, message = "Stock quantity cannot be lesser than zero")
-    private Integer stockQuantity;
+    // FIXED: Use BigDecimal instead of Double
+    @Positive(message = "Stock must be positive")
+    private BigDecimal stockQuantity;
+
+    // NEW: Unit support (critical for real systems)
+    @Enumerated(EnumType.STRING)
+    private Units unit;
 
     private String description;
 
-    private String imageUrl;
-
     private LocalDateTime expiryDate;
 
-    private  LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
+    // =========================
+    // AUDIT
+    // =========================
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // =========================
+    // SAFE toString (NO recursion)
+    // =========================
+
     @Override
     public String toString() {
-        return "User{" +
+        return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", sku='" + sku + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
-                ", description='" + description + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", expiryDate=" + expiryDate +
-                ", updatedAt=" + updatedAt +
-                ", createdAt=" + createdAt +
-                ", category=" + category +
+                ", unit=" + unit +
+                ", categoryId=" + (category != null ? category.getCategoryId() : null) +
                 '}';
     }
 }

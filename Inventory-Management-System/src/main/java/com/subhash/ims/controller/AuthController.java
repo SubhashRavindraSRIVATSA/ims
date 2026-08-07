@@ -5,6 +5,7 @@ import com.subhash.ims.dto.RegisterRequest;
 import com.subhash.ims.dto.Response;
 import com.subhash.ims.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -3,10 +3,12 @@ package com.subhash.ims.service;
 import com.subhash.ims.dto.CategoryDTO;
 import com.subhash.ims.dto.Response;
 
+import java.util.List;
+
 public interface CategoryService {
-    Response createCategory(CategoryDTO categoryDTO);
-    Response getAllCategories();
-    Response getCategoryById(Long id);
-    Response updateCategory(Long id, CategoryDTO categoryDTO);
-    Response deleteCategory(Long id);
+    CategoryDTO createCategory(CategoryDTO dto);
+    CategoryDTO getCategoryById(Long id);
+    List<CategoryDTO> getAllCategories();
+    CategoryDTO updateCategory(Long id, CategoryDTO dto);
+    void deleteCategory(Long id);
 }
