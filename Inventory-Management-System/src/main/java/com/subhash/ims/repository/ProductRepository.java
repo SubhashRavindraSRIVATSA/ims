@@ -2,7 +2,7 @@ package com.subhash.ims.repository;
 
 import com.subhash.ims.entity.Category;
 import com.subhash.ims.entity.Product;
-import com.subhash.ims.enums.Units;
+import com.subhash.ims.enums.UnitType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameContainingIgnoreCase(String name);
 
     // Filter by unit type
-    List<Product> findByUnit(Units units);
+    List<Product> findByUnit(UnitType units);
 
     // Example: low stock query
     List<Product> findByQuantityLessThan(double threshold);

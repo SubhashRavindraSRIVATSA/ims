@@ -2,7 +2,7 @@ package com.subhash.ims.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.subhash.ims.enums.Units;
+import com.subhash.ims.enums.UnitType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ public class ProductDTO {
     private String name;
     private BigDecimal price;
     private BigDecimal stockQuantity;
-    private Units unit;
+    private UnitType unit;
     private String description;
     private LocalDateTime expiryDate;
     private LocalDateTime createdAt;

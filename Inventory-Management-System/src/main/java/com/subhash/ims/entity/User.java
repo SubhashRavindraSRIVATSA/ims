@@ -1,16 +1,13 @@
 package com.subhash.ims.entity;
 
-import com.subhash.ims.enums.UserRole;
+import com.subhash.ims.enums.RoleType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class User {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private RoleType role;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;

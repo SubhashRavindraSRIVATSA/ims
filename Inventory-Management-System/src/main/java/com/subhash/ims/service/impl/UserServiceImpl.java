@@ -5,7 +5,7 @@ import com.subhash.ims.dto.RegisterRequest;
 import com.subhash.ims.dto.Response;
 import com.subhash.ims.dto.UserDTO;
 import com.subhash.ims.entity.User;
-import com.subhash.ims.enums.UserRole;
+import com.subhash.ims.enums.RoleType;
 import com.subhash.ims.exceptions.InvalidCredentialsException;
 import com.subhash.ims.exceptions.NotFoundException;
 import com.subhash.ims.repository.UserRepository;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response registerUser(RegisterRequest registerRequest) {
-        UserRole role = UserRole.MANAGER;
+        RoleType role = RoleType.MANAGER;
 
         if (registerRequest.getRole() != null) {
             role=registerRequest.getRole();

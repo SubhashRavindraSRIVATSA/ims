@@ -1,6 +1,6 @@
 package com.subhash.ims.entity;
 
-import com.subhash.ims.enums.Units;
+import com.subhash.ims.enums.UnitType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -33,7 +33,7 @@ public class Product {
 
     // NEW: Unit support (critical for real systems)
     @Enumerated(EnumType.STRING)
-    private Units unit;
+    private UnitType unit;
 
     private String description;
 

@@ -1,18 +1,13 @@
 package com.subhash.ims.service.impl;
 
 import com.subhash.ims.dto.CategoryDTO;
-import com.subhash.ims.dto.Response;
 import com.subhash.ims.entity.Category;
-import com.subhash.ims.exceptions.NotFoundException;
 import com.subhash.ims.mapper.CategoryMapper;
 import com.subhash.ims.repository.CategoryRepository;
 import com.subhash.ims.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.subhash.ims.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.subhash.ims.enums.UserRole;
+import com.subhash.ims.enums.RoleType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,7 +17,7 @@ public class Response {
     private String message;
     //for login
     private String token;
-    private UserRole role;
+    private RoleType role;
     private String expirationTime;
 
     //for pagination

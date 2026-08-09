@@ -3,7 +3,7 @@ package com.subhash.ims.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.subhash.ims.enums.UserRole;
+import com.subhash.ims.enums.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class UserDTO {
     @JsonIgnore
     private String password;
     private String phoneNumber;
-    private UserRole role;
+    private RoleType role;
     private List<TransactionDTO> transactions;
     private LocalDateTime createdAt;
 }

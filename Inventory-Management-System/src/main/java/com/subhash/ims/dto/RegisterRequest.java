@@ -1,6 +1,6 @@
 package com.subhash.ims.dto;
 
-import com.subhash.ims.enums.UserRole;
+import com.subhash.ims.enums.RoleType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,5 +18,5 @@ public class RegisterRequest {
     private String password;
     @NotBlank(message = "PhoneNumber is required")
     private String phoneNumber;
-    private UserRole role;
+    private RoleType role;
 }
