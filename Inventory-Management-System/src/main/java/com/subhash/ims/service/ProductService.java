@@ -1,17 +1,14 @@
 package com.subhash.ims.service;
 
-import com.subhash.ims.dto.ProductDTO;
-import com.subhash.ims.dto.Response;
 import com.subhash.ims.entity.Product;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO createProduct(ProductDTO productDTO);
-    List<ProductDTO> getAllProducts();
-    ProductDTO getProductById(Long id);
-    ProductDTO updateProduct(Long id, ProductDTO dto);
+    Product createProduct(Product product);
+    List<Product> getAllProducts();
+    Product getProductById(Long id);
+    Product updateProduct(Long id, Product product);
     void deleteProduct(Long id);
-    Product getEntity(Long id);
+    List<Product> getProductsByCategory(Long categoryId);
 }

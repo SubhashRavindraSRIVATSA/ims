@@ -1,13 +1,13 @@
 package com.subhash.ims.controller;
 
-import com.subhash.ims.dto.CategoryDTO;
-import com.subhash.ims.dto.Response;
+import com.subhash.ims.entity.Category;
 import com.subhash.ims.service.CategoryService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -16,29 +16,40 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-//    @PostMapping("/add")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<Response> createCategory(@RequestBody @Valid CategoryDTO categoryDTO) {
-//        return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
-//    }
-//
-//    @GetMapping("/all")
-//    public ResponseEntity<Response> getAllCategories() {
-//        return ResponseEntity.ok(categoryService.getAllCategories());
-//    }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Response> getCategoryById(@PathVariable Long id) {
-//        return ResponseEntity.ok(categoryService.getCategoryById(id));
-//    }
-//    @PutMapping("/update/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<Response> updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDTO categoryDTO) {
-//        return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<Response> deleteCategory(@PathVariable Long id) {
-//        return ResponseEntity.ok(categoryService.deleteCategory(id));
-//    }
+    @PostMapping
+    public ResponseEntity<Category> createCategory(
+            @RequestBody Category category) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(categoryService.createCategory(category));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(
+                categoryService.getAllCategories());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(
+                categoryService.getCategoryById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(
+            @PathVariable Long id,
+            @RequestBody Category category) {
+        return ResponseEntity.ok(
+                categoryService.updateCategory(id, category));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(
+            @PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

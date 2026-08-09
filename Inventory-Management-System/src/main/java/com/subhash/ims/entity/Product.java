@@ -1,13 +1,9 @@
 package com.subhash.ims.entity;
 
-import com.subhash.ims.enums.UnitType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,59 +17,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @Column(nullable = false)
     private String name;
-
-    @Positive(message = "Product price must be a positive value")
-    private BigDecimal price;
-
-    // FIXED: Use BigDecimal instead of Double
-    @Positive(message = "Stock must be positive")
-    private BigDecimal stockQuantity;
-
-    // NEW: Unit support (critical for real systems)
-    @Enumerated(EnumType.STRING)
-    private UnitType unit;
 
     private String description;
 
-    private LocalDateTime expiryDate;
+    @Column(nullable = false)
+    private BigDecimal price;
 
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    private LocalDateTime createdAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    // =========================
-    // AUDIT
-    // =========================
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    // =========================
-    // SAFE toString (NO recursion)
-    // =========================
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", stockQuantity=" + stockQuantity +
-                ", unit=" + unit +
-                ", categoryId=" + (category != null ? category.getCategoryId() : null) +
-                '}';
-    }
 }
